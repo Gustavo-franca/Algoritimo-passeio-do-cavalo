@@ -1,4 +1,4 @@
-export default function createChessboard(){
+export default function  createChessboard(){
   const tabuleiro = [];
   const verticalHouses = 8;
   const horizontalHouses = 8;
@@ -9,12 +9,26 @@ export default function createChessboard(){
     }
     tabuleiro.push(aux);
   }
-  return tabuleiro;
+
+function convertNumberInLetter(number){
+  let startOfLowerCaseLetterInUTF16 = 96; //next is a
+  return String.fromCharCode(number + startOfLowerCaseLetterInUTF16);
 }
 
-export function showPositionInChessBoard(chessBoard,horizontal, vertical){
-  console.log(`a1: ${}`)
+ function showPositionInChessBoard(horizontal, vertical){
+   if(horizontal > horizontalHouses |  vertical > verticalHouses  ){
+     console.log("Estas coordenadas estão fora do tabuleiro");
+     return;
+   }
+  console.log(`${convertNumberInLetter(horizontal + 1)}${vertical + 1}: ${tabuleiro[horizontal][vertical]}`);
 
 }
+  return {
+    value : tabuleiro,
+    showPosition : showPositionInChessBoard
+
+  };
+}
+
 
 
