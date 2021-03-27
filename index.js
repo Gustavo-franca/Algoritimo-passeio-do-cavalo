@@ -12,7 +12,7 @@ reader.question("Qual a Posição Inicial do Cavalo?\n", function(answer) {
 
     const [horizontalLetter,vertical,rest] = answer.slice('');
      const horse = createHorse(board);
-     const valid = board.addHorse(horse,horizontalLetter,parseInt(vertical));
+     const valid = board.addHorse(horse,parseInt(vertical),horizontalLetter);
     if(!valid){
       console.log("Finalizando Aplicação...");
       return;
