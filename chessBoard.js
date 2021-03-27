@@ -1,3 +1,4 @@
+import createChessBoardView from './chessBoardView.js';
 
   const START_OF_LOWER_CASE_LETTER_IN_UTF16 = 96;
   const FINISH_OF_LOWER_CASE_LETTER_IN_UTF16 = 123;
@@ -7,40 +8,31 @@ export default function  createChessboard(){
    const verticalHouses = 8;
   const horizontalHouses = 8;
   const board = initBoard();
+  const view = createChessBoardView(verticalHouses,horizontalHouses);
   const pieces = {
 
   }
  
   function resetBoard(){
-      for(let i = 0 ; i < horizontalHouses;i++){
-        for(let j = 0 ; j < verticalHouses;j++){
+      for(let i = 0 ; i < verticalHouses;i++){
+        for(let j = 0 ; j < horizontalHouses;j++){
          board[i][j] = 0;        
          }
       }
   }
   function initBoard(){
     const board = []
-    for(let i = 0 ; i < horizontalHouses;i++){
+    for(let i = 0 ; i < verticalHouses;i++){
         let aux = [];
-        for(let j = 0 ; j < verticalHouses;j++){
+        for(let j = 0 ; j < horizontalHouses;j++){
             aux.push(0);
         }
         board.push(aux);
       }
     return board;
   }
-  function showFullBoard(){
-      for(let i = 0 ; i < horizontalHouses;i++){
-let row = "|"
-        for(let j = 0 ; j < verticalHouses;j++){
-         /*  ${convertNumberInLetter(i + 1)}${j + 1}: */
-          row += `${board[i][j]}| `
-        }
-         console.log(row);
-
-      }
-      console.log("\n");
-
+  async function showFullBoard(){
+    view.showFullBoard(board,pieces.horse);
   }
  
   function fullyTraveled(){
@@ -51,7 +43,7 @@ let row = "|"
     return rowWithZero?false: true;
   }
   
-  function addHorse(horse,intialHorizontalLetter,initialVertical){
+  function addHorse(horse,initialVertical,intialHorizontalLetter){
     const horizontal = convertLetterInNumber(intialHorizontalLetter) - 1;
     if(!validPosition(horizontal,initialVertical)){
       console.log("posição inválida");
@@ -59,15 +51,14 @@ let row = "|"
     }
     const vertical = initialVertical -1;
     horse.setStartingPosition(horizontal,vertical);
-    board[horizontal][vertical] = 1;
     pieces.horse = horse;
     return true;
   } 
- function showPositionInChessBoard(horizontal, vertical){
- if(!validPosition(horizontal,vertical)){
+ function showPositionInChessBoard(vertical,horizontal){
+/*  if(!validPosition(horizontal,vertical)){
      console.log("Estas coordenadas estão fora do tabuleiro");
      return;
-   }
+   } */
   console.log(`${convertNumberInLetter(horizontal + 1)}${vertical + 1}`);
 
 }
@@ -77,41 +68,37 @@ function validPosition(horizontal,vertical){
 
   async function walkTheHorse(){
     function showHorsePosition(){
-    const [h,v] = pieces.horse.position();
-      showPositionInChessBoard(h,v);
+    const [v,h] = pieces.horse.position();
+      showPositionInChessBoard(v,h);
     }
     
     if(!pieces.horse){
       console.log("Nenhum cavalo para Passear");
     }
     console.log("iniciando Passeio ...");
-    showHorsePosition();
-    const moves = pieces.horse.movesOfRide();
-
+    const moves =await  pieces.horse.movesOfRide();
     moves.forEach((move)=>{
       showPositionInChessBoard(move[0],move[1]);
     })
+    showFullBoard();
     resetBoard();
     pieces.horse.resetPosition();
-    
-
-    // existem 8 movimentos 0 - 7
-
-
-
-    //quando não tem mais nenhum movimento a ser feito verifica se o tabuleiro está cheio 
-      //se sim finaliza o loop 
-
-      // se não retorna uma jogada e tenta o próximo movimento;
-      
-     
-
-    
-    showHorsePosition();
-
-
-
+    await view.animatedMoves(moves);
   }
+  function horsePosition(){
+    return pieces.horse.position()
+  }
+
+  async function updateBoard(mil){
+    function sleep(mil){
+      new Promise((resolve)=>setTimeout(resolve,mil))
+    }
+    await sleep(mil);
+   await view.updateBoard(board,pieces.horse);
+  }
+ async function showFullBoard(){
+   view.showFullBoard(board,pieces.horse);
+ }
   return {
     value : board,
     showPosition : showPositionInChessBoard,
@@ -120,6 +107,8 @@ function validPosition(horizontal,vertical){
     walkTheHorse:walkTheHorse,
     fullyTraveled,
     showFullBoard,
+    horsePosition,
+    updateBoard,
   };
 }
 
@@ -136,3 +125,4 @@ function convertNumberInLetter(number){
   let startOfLowerCaseLetterInUTF16 = 96; //next is a
   return String.fromCharCode(number + startOfLowerCaseLetterInUTF16);
 }
+
