@@ -18,6 +18,7 @@ export default function  createHorse(b){
   function resetPosition(){
     horizontal = initialHorizontal;
     vertical = initialVertical;
+    board.value[vertical][horizontal] = 1;
   }
   function setHorseStartingPosition(h,v){
     if(board.validPosition(h,v)){
@@ -25,21 +26,23 @@ export default function  createHorse(b){
       initialVertical = v;
       horizontal = h;
       vertical = v;
+      board.value[vertical][horizontal] = 1;
       return true;
     }
     return false;
   }
   function undo(lastMove){
 
-    if(lastMove < 0 || lastMove >= moves.lenght)return false;
+    if(lastMove < 0 || lastMove >= moves.length)return false;
     let operator = 4;
     if(lastMove > 3) operator = -4;
     const [h,v] = moves[lastMove + operator];
 
   if(board.validPosition(horizontal + h, vertical + v)){
+    board.value[vertical][horizontal] = 0;
     horizontal += h;
     vertical += v;
-    board.value[horizontal][vertical] = 0;
+   
     return true;
   }
   return false;
@@ -57,12 +60,12 @@ export default function  createHorse(b){
 
   if(board.validPosition(horizontal + h, vertical + v)){
  
-    if(board.value[horizontal + h][vertical + v] == 1){
+    if(board.value[vertical + v][horizontal + h] == 1){
       return false;
     }
     horizontal += h;
     vertical += v;
-    board.value[horizontal][vertical] = 1;
+    board.value[vertical][horizontal] = 1;
     return true;
   }
   return false;
@@ -71,23 +74,22 @@ export default function  createHorse(b){
   }
 
   function position(){
-    return [horizontal,vertical];
+    return [vertical,horizontal];
   }
-  function movesOfRide(){
+ async function movesOfRide(){
     const movesOfRide = [];
     let traveled = false;
-     function loopMoves(level){
+    movesOfRide.push(position());
+     async function loopMoves(level){
       if(level > 4000)throw console.log("limite de tentativas");
-      for(let i = 0;i < 8;i++){
+      for(let i = 0;i < moves.length;i++){
         // quando uma casa está cheia ou é fora do tabuleiro passa para o próximo movimento
         if(move(i)){
             movesOfRide.push(position());
            loopMoves(level + 1);
            if(traveled)return;
            if(!undo(i)){
-             console.log("UNDO FAIL - move: "+ i); 
-             showHorsePosition();
-
+             console.log("UNDO FAIL - move: "+ i);
            }
             movesOfRide.pop();
         }   
@@ -101,7 +103,10 @@ export default function  createHorse(b){
       
     }
    //para quando o board foi tolmente percorrido.
-   loopMoves(0);
+   await loopMoves(0);
+   if(traveled == false){
+     throw console.log("Não encotrado ");
+   }
    return movesOfRide;
   }
 
