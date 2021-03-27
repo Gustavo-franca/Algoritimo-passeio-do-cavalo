@@ -17,5 +17,6 @@ reader.question("Qual a Posição Inicial do Cavalo?\n", function(answer) {
       console.log("Finalizando Aplicação...");
       return;
     }
+    board.walkTheHorse();
     reader.close();
 });
