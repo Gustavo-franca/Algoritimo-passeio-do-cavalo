@@ -11,7 +11,13 @@ export default function  createChessboard(){
 
   }
  
-
+  function resetBoard(){
+      for(let i = 0 ; i < horizontalHouses;i++){
+        for(let j = 0 ; j < verticalHouses;j++){
+         board[i][j] = 0;        
+         }
+      }
+  }
   function initBoard(){
     const board = []
     for(let i = 0 ; i < horizontalHouses;i++){
@@ -40,7 +46,6 @@ let row = "|"
   function fullyTraveled(){
 
     const rowWithZero = board.find((row)=>{
-      console.log(row.includes(0));
       return row.includes(0);
     })
     return rowWithZero?false: true;
@@ -63,7 +68,7 @@ let row = "|"
      console.log("Estas coordenadas estão fora do tabuleiro");
      return;
    }
-  console.log(`${convertNumberInLetter(horizontal + 1)}${vertical + 1}: ${board[horizontal][vertical]}`);
+  console.log(`${convertNumberInLetter(horizontal + 1)}${vertical + 1}`);
 
 }
 function validPosition(horizontal,vertical){
@@ -71,51 +76,24 @@ function validPosition(horizontal,vertical){
 }
 
   async function walkTheHorse(){
-    const moves = [];
-    if(!pieces.horse){
-      console.log("Nenhum cavalo para Passear");
-    }
     function showHorsePosition(){
     const [h,v] = pieces.horse.position();
       showPositionInChessBoard(h,v);
     }
-    function loopMoves(level){
-      if(level > 1000)throw console.log("limite de tentativas");
-      for(let i = 0;i < 8;i++){
-        showFullBoard()
-         /*  console.log(`level :${level} index : ${i}`); */
-        // quando uma casa está cheia ou é fora do tabuleiro passa para o próximo movimento
-        if(pieces.horse.move(i)){
-           loopMoves(level + 1);
-           if(!pieces.horse.undo(i)){
-             console.log("UNDO FAIL - move: "+ i); 
-             showHorsePosition();
-
-           }
-        }
-        //caso todas as casas estiverem cheias ou serem inválida o loop termina
-       
-      
-              
-       
-      }
-
-      //verifico se o tabuleiro está cheio
-      // se estiver finalizo o processo
-      // se não volto um nivel
-      if(fullyTraveled()){
-        showFullBoard();
-        throw console.log("totalmente percorrido no level" + level );
-        
-      }else{
-        console.log(level);
-      }
-      
+    
+    if(!pieces.horse){
+      console.log("Nenhum cavalo para Passear");
     }
-   //para quando o board foi tolmente percorrido.
+    console.log("iniciando Passeio ...");
+    showHorsePosition();
+    const moves = pieces.horse.movesOfRide();
 
-   loopMoves(0);
-   
+    moves.forEach((move)=>{
+      showPositionInChessBoard(move[0],move[1]);
+    })
+    resetBoard();
+    pieces.horse.resetPosition();
+    
 
     // existem 8 movimentos 0 - 7
 
@@ -140,6 +118,8 @@ function validPosition(horizontal,vertical){
     addHorse : addHorse,
     validPosition : validPosition,
     walkTheHorse:walkTheHorse,
+    fullyTraveled,
+    showFullBoard,
   };
 }
 
