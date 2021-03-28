@@ -46,8 +46,7 @@ export default function  createChessboard(){
   function addHorse(horse,initialVertical,intialHorizontalLetter){
     const horizontal = convertLetterInNumber(intialHorizontalLetter) - 1;
     if(!validPosition(horizontal,initialVertical)){
-      console.log("posição inválida");
-      return false;
+      throw new Error("Posição inserida inválida, por favor insira uma posição válida");
     }
     const vertical = initialVertical -1;
     horse.setStartingPosition(horizontal,vertical);

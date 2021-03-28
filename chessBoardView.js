@@ -1,10 +1,8 @@
+   import reader from './reader.js';
    import readline from 'readline';
    import createChessBoard from './chessBoard.js';
  export default function createChessBoardView(verticalHouses,horizontalHouses){
-  const rl = readline.createInterface({
-      input: process.stdin,
-      output: process.stdout
-  });
+  const rl = reader;
   const horseEmoji = "🐴";
   const usedHouse = "X";
   const freeHouse = " ";
