@@ -75,15 +75,16 @@ function validPosition(horizontal,vertical){
     if(!pieces.horse){
       console.log("Nenhum cavalo para Passear");
     }
-    console.log("iniciando Passeio ...");
     const moves =await  pieces.horse.movesOfRide();
     moves.forEach((move)=>{
       showPositionInChessBoard(move[0],move[1]);
     })
-    showFullBoard();
+    
     resetBoard();
     pieces.horse.resetPosition();
+    console.log("iniciando o passeio ...");
     await view.animatedMoves(moves);
+    view.close();
   }
   function horsePosition(){
     return pieces.horse.position()

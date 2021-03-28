@@ -25,13 +25,13 @@ const [v,h]  = horse.position();
   }
 
   async function updateBoard(board,horse){
-
     for(let i = verticalHouses - 1 ; i >= 0;i--){
       const move = (offset + i);
       await readline.moveCursor(process.stdout,0, -move) ;
       await printLine(board,i,horse);
       await readline.moveCursor(process.stdout,0,move);
         }
+  
   }
     async function showFullBoard(board,horse){
     /*
@@ -123,6 +123,7 @@ const [v,h]  = horse.position();
     showHorsePosition,
     updateBoard,
     animatedMoves,
+    close : ()=>rl.close()
   }
 }
 

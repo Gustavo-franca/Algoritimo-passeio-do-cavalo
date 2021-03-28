@@ -11,6 +11,7 @@ const reader = readline.createInterface({
 reader.question("Qual a Posição Inicial do Cavalo?\n", function(answer) {
 
     const [horizontalLetter,vertical,rest] = answer.slice('');
+    reader.pause();
      const horse = createHorse(board);
      const valid = board.addHorse(horse,parseInt(vertical),horizontalLetter);
     if(!valid){
@@ -18,5 +19,5 @@ reader.question("Qual a Posição Inicial do Cavalo?\n", function(answer) {
       return;
     }
     board.walkTheHorse();
-    reader.close();
+ 
 });
